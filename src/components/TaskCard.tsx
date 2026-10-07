@@ -93,13 +93,20 @@ export default function TaskCard({ task, onComplete, onDelete }: TaskCardProps) 
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex-1">
-                <h3 className={`text-lg font-bold transition-all duration-200 ${
-                  task.completed
-                    ? 'text-white/50 line-through'
-                    : 'text-white'
-                }`}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    window.history.pushState({}, '', `/task/${task.id}`);
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }}
+                  className={`text-left text-lg font-bold transition-all duration-200 hover:text-purple-300 ${
+                    task.completed
+                      ? 'text-white/50 line-through'
+                      : 'text-white'
+                  }`}
+                >
                   {task.title}
-                </h3>
+                </button>
                 {task.description && (
                   <p className={`text-sm mt-1 ${
                     task.completed

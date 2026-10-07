@@ -52,6 +52,16 @@ export default function Header({
 
           </div>
 
+          <button
+            onClick={() => {
+              window.history.pushState({}, '', '/login');
+              window.dispatchEvent(new PopStateEvent('popstate'));
+            }}
+            className="px-5 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold shadow-lg shadow-purple-500/30 hover:scale-105 transition"
+          >
+            Login
+          </button>
+
           {/* Stats Display */}
           <div className="hidden md:flex gap-6">
 

@@ -2,12 +2,29 @@ import { useState, useEffect } from 'react';
 import TaskManager from './components/TaskManager';
 import RewardSystem from './components/RewardSystem';
 import Header from './components/Header';
+import Login from './components/Login';
+import TaskDetails from './components/TaskDetails';
+
+function getRoute() {
+  const path = window.location.pathname.replace(/\/+$/, '') || '/';
+  const taskMatch = path.match(/^\/task\/([^/]+)$/);
+  if (path === '/login') return { page: 'login' as const, taskId: '' };
+  if (taskMatch) return { page: 'task' as const, taskId: decodeURIComponent(taskMatch[1]) };
+  return { page: 'home' as const, taskId: '' };
+}
 
 export default function App() {
   const [tasks, setTasks] = useState<any[]>([]);
   const [streakCount, setStreakCount] = useState(0);
   const [totalPointsEarned, setTotalPointsEarned] = useState(0);
   const [currentLevel, setCurrentLevel] = useState(1);
+  const [route, setRoute] = useState(getRoute);
+
+  useEffect(() => {
+    const handleRouteChange = () => setRoute(getRoute());
+    window.addEventListener('popstate', handleRouteChange);
+    return () => window.removeEventListener('popstate', handleRouteChange);
+  }, []);
 
   // Load data from localStorage
   useEffect(() => {
@@ -75,6 +92,15 @@ export default function App() {
 
   const completedTasks = tasks.filter(t => t.completed).length;
   const completionRate = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
+
+  if (route.page === 'login') {
+    return <Login />;
+  }
+
+  if (route.page === 'task') {
+    const selectedTask = tasks.find(task => task.id === route.taskId);
+    return <TaskDetails task={selectedTask} />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-900 to-slate-950 text-white">
